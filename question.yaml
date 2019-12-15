@@ -1,0 +1,49 @@
+labels:
+  io.cattle.role: project # options are cluster/project
+questions:
+- variable: defaultImage
+  default: true
+  description: "Use default Docker image"
+  label: Use Default Image
+  type: boolean
+  show_subquestion_if: false
+  group: "Container Images"
+  subquestions:
+  - variable: image.repository
+    default: "ranchercharts/chartmuseum-chartmuseum"
+    description: "Docker image repository"
+    type: string
+    label: Image Repository
+    required: true
+  - variable: image.tag
+    default: "v0.9.0"
+    description: "Docker image tag"
+    type: string
+    label: Image Tag
+    required: true
+# Service and L7 LoadBalancer
+- variable: ingress.enabled
+  default: true
+  description: "Expose app using Layer 7 Load Balancer - ingress"
+  type: boolean
+  label: Expose app using Layer 7 Load Balancer
+  show_subquestion_if: true
+  group: "Services and Load Balancing"
+  subquestions:
+  - variable: ingress.hosts[0].name
+    default: ".kcp.kaust.edu.sa"
+    description: "Hostname to your app installation"
+    type: hostname
+    required: true
+    label: Hostname
+- variable: service.type
+  required: true
+  default: "ClusterIP"
+  description: "ChartMuseum Service Type"
+  type: enum
+  label: Service Type For ChartMuseum 
+  group: "Services and Load Balancing"
+  show_if: "ingress.enabled=false"
+  options:
+    - "ClusterIP"
+    - "NodePort"
